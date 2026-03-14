@@ -649,10 +649,16 @@ body{font-family:var(--F);background:var(--bg);color:var(--txt);-webkit-font-smo
             <strong>Download Die Line</strong>
             Vector artwork file for print production
           </div>
-          <button class="dl-bar-btn" onclick="dlDL()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download
-          </button>
+          <div style="display:flex;gap:8px">
+            <button class="dl-bar-btn" style="background:var(--bg2);color:var(--txt);border:1px solid var(--line2)" onclick="dlPreview()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview
+            </button>
+            <button class="dl-bar-btn" onclick="dlDL()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </button>
+          </div>
         </div>
       </div>
       <div id="spec-photo-pane">
@@ -1060,6 +1066,12 @@ function dlDL() {
   a.download = s.dl_name;
   a.target = '_blank';
   a.click();
+}
+function dlPreview() {
+  if (!curSpec) return;
+  var s = SPECS[curSpec];
+  if (!s.dl_name) { showToast('No die line available for this spec','err'); return; }
+  window.open('https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-dielines/' + encodeURIComponent(s.dl_name), '_blank');
 }
 
 /* ═══ GITHUB API ════════════════════════════════════════════════════ */
