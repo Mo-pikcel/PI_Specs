@@ -1278,7 +1278,7 @@ function renderAdminSpecs() {
 function filterAdminSpecs(filter) {
   var listWrap = document.getElementById('adm-list-wrap');
   if (!listWrap) return;
-  var allKeys = Object.keys(SPECS);
+  var allKeys = Object.keys(SPECS).sort(function(a,b){ return SPECS[a].t.localeCompare(SPECS[b].t); });
   var keys = filter ? allKeys.filter(function(k){ return SPECS[k].t.toLowerCase().indexOf(filter.toLowerCase())!==-1; }) : allKeys;
   var count = document.getElementById('adm-count');
   if (count) count.textContent = filter ? (keys.length + ' of ' + allKeys.length) : (allKeys.length + ' specs');
