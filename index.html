@@ -1055,7 +1055,7 @@ function dlDL() {
   if (!curSpec) return;
   var s = SPECS[curSpec];
   if (!s.dl_name) { showToast('No die line available for this spec','err'); return; }
-  window.open('https://docs.google.com/viewer?url=' + encodeURIComponent('https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-dielines/' + s.dl_name), '_blank');
+  window.open('https://docs.google.com/viewer?url=' + encodeURIComponent('https://cdn.jsdelivr.net/gh/Mo-pikcel/PI_Specs@main/pi-specs-dielines/' + s.dl_name), '_blank');
 }
 
 /* ═══ GITHUB API ════════════════════════════════════════════════════ */
@@ -1361,12 +1361,13 @@ function saveSpecForm() {
   };
   var doSave = function(savedPdf, savedImg) {
     if (savedPdf) SPECS[key].dl_name = savedPdf;
-    if (savedImg) SPECS[key].p = 'https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-images/' + savedImg;
+    if (savedImg) SPECS[key].p = 'https://cdn.jsdelivr.net/gh/Mo-pikcel/PI_Specs@main/pi-specs-images/' + savedImg;
     saveStoredSpecs();
     renderNav();
     renderAdminSpecs();
     closeSpecForm();
     showToast((editingKey ? 'Updated: ' : 'Added: ') + name,'ok');
+    if (curSpec === key) openSpec(key);
   };
   var imgFile = sfImgFile;
   var pdfFile = sfPdfFile;
