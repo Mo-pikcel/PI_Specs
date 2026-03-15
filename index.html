@@ -742,7 +742,16 @@ body{font-family:var(--F);background:var(--bg);color:var(--txt);-webkit-font-smo
           <div class="img-upload-t">Drop image or click to browse</div>
           <div class="img-upload-s">PNG, JPG — Recommended: 1200×800px</div>
         </label>
-        <img id="sf-img-preview" class="img-preview" src="" alt="" style="display:none"/>
+        <div id="sf-img-preview-wrap" style="display:none;position:relative;margin-top:10px">
+          <img id="sf-img-preview" class="img-preview" src="" alt="" style="margin-top:0"/>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <label for="sf-img-inp" class="adm-btn" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Change Image
+            </label>
+            <button type="button" class="adm-btn del" onclick="sfRemoveImg()">Remove Image</button>
+          </div>
+        </div>
       </div>
       <div class="fg sf-full"><label>Die Line PDFs</label>
         <input type="file" id="sf-pdf-inp" accept=".pdf,application/pdf" multiple style="display:none" onchange="sfPdfPick(this)"/>
@@ -986,7 +995,7 @@ function renderNav() {
 }
 
 /* ═══ STATE ════════════════════════════════════════════════════════ */
-var openSec = null, curSpec = null, isAdmin = false, editingKey = null, sfImgData = null, sfImgFile = null, sfPdfFiles = [], sfExistingPdfs = [], admCurTab = 'specs';
+var openSec = null, curSpec = null, isAdmin = false, editingKey = null, sfImgData = null, sfImgFile = null, sfImgRemoved = false, sfPdfFiles = [], sfExistingPdfs = [], admCurTab = 'specs';
 
 function toggleSec(id, btn) {
   var list = document.getElementById('sl-' + id);
@@ -1306,7 +1315,7 @@ function renderAdminCats() {
 /* ═══ SPEC FORM ════════════════════════════════════════════════════ */
 function openSpecForm(key) {
   editingKey = key;
-  sfImgData = null; sfImgFile = null; sfPdfFiles = [];
+  sfImgData = null; sfImgFile = null; sfImgRemoved = false; sfPdfFiles = [];
   sfExistingPdfs = key && SPECS[key] ? (SPECS[key].dl_files || (SPECS[key].dl_name ? [SPECS[key].dl_name] : [])) : [];
   var catSel = document.getElementById('sf-cat');
   catSel.innerHTML = CATS.map(function(c){ return '<option value="' + c.id + '">' + escH(c.label) + '</option>'; }).join('');
@@ -1321,8 +1330,7 @@ function openSpecForm(key) {
   document.getElementById('sf-pk').value = s ? (s.pk||'') : '';
   if (s&&s.cat) catSel.value = s.cat;
   sfUpdateGroups(s ? s.group : null);
-  var prev = document.getElementById('sf-img-preview');
-  if (s&&s.p) { prev.src=s.p; prev.style.display='block'; sfImgData=s.p; } else { prev.src=''; prev.style.display='none'; }
+  sfShowImgPreview(s&&s.p ? s.p : null);
   document.getElementById('spec-form-curtain').classList.add('open');
 }
 
@@ -1334,22 +1342,31 @@ function sfUpdateGroups(selectedGroup) {
   document.getElementById('sf-group').innerHTML = opts;
 }
 
+function sfShowImgPreview(src) {
+  var wrap = document.getElementById('sf-img-preview-wrap');
+  var img = document.getElementById('sf-img-preview');
+  if (src) { img.src = src; wrap.style.display = 'block'; }
+  else { img.src = ''; wrap.style.display = 'none'; }
+}
+function sfRemoveImg() {
+  sfImgFile = null; sfImgRemoved = true;
+  sfShowImgPreview(null);
+}
 function sfImgPick(input) {
   if (!input.files||!input.files[0]) return;
-  sfImgFile = input.files[0];
+  sfImgFile = input.files[0]; sfImgRemoved = false;
   var r = new FileReader();
-  r.onload = function(e) { var p=document.getElementById('sf-img-preview'); p.src=e.target.result; p.style.display='block'; };
+  r.onload = function(e) { sfShowImgPreview(e.target.result); };
   r.readAsDataURL(sfImgFile);
 }
-
 function sfImgDrop(event) {
   event.preventDefault();
   document.getElementById('sf-img-zone').classList.remove('drag');
   var file = event.dataTransfer.files[0];
   if (!file||!file.type.startsWith('image/')) return;
-  sfImgFile = file;
+  sfImgFile = file; sfImgRemoved = false;
   var r = new FileReader();
-  r.onload = function(e) { var p=document.getElementById('sf-img-preview'); p.src=e.target.result; p.style.display='block'; };
+  r.onload = function(e) { sfShowImgPreview(e.target.result); };
   r.readAsDataURL(sfImgFile);
 }
 
@@ -1401,13 +1418,16 @@ function saveSpecForm() {
     ar: document.getElementById('sf-ar').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
     pr: document.getElementById('sf-pr').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
     pk: document.getElementById('sf-pk').value.trim(),
-    p: editingKey&&SPECS[editingKey] ? SPECS[editingKey].p : '',
+    p: sfImgRemoved ? '' : (editingKey&&SPECS[editingKey] ? SPECS[editingKey].p : ''),
     dl_files: sfExistingPdfs.slice(),
     cat: catId, group: groupId, _admin: true
   };
   var doSave = function(newPdfs, savedImg) {
     SPECS[key].dl_files = sfExistingPdfs.concat(newPdfs);
     if (savedImg) SPECS[key].p = 'https://cdn.jsdelivr.net/gh/Mo-pikcel/PI_Specs@main/pi-specs-images/' + savedImg;
+    if (sfImgRemoved && editingKey && SPECS[editingKey] && SPECS[editingKey].p && SPECS[editingKey].p.indexOf('pi-specs-images/') !== -1) {
+      ghDeleteImage(SPECS[editingKey].p.split('pi-specs-images/')[1]);
+    }
     saveStoredSpecs();
     renderNav();
     renderAdminSpecs();
