@@ -1055,7 +1055,7 @@ function dlDL() {
   if (!curSpec) return;
   var s = SPECS[curSpec];
   if (!s.dl_name) { showToast('No die line available for this spec','err'); return; }
-  window.open('https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-dielines/' + encodeURIComponent(s.dl_name), '_blank');
+  window.open('https://docs.google.com/viewer?url=' + encodeURIComponent('https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-dielines/' + s.dl_name), '_blank');
 }
 
 /* ═══ GITHUB API ════════════════════════════════════════════════════ */
