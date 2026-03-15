@@ -961,6 +961,7 @@ function renderNav() {
     var catHtml = '<div class="nav-section"><div class="nav-section-label">' + escH(cat.label) + '</div>';
     cat.groups.forEach(function(grp) {
       var items = Object.keys(SPECS).filter(function(k){ return SPECS[k].cat===cat.id && SPECS[k].group===grp.id; });
+      items.sort(function(a,b){ return SPECS[a].t.localeCompare(SPECS[b].t); });
       if (!items.length) return;
       catHasContent = true;
       catHtml += '<button class="nav-item has-sub" id="nb-' + escH(grp.id) + '" onclick="toggleSec(\'' + grp.id + '\',this)">';
@@ -971,6 +972,7 @@ function renderNav() {
       catHtml += '</div>';
     });
     var standalone = Object.keys(SPECS).filter(function(k){ return SPECS[k].cat===cat.id && !SPECS[k].group; });
+    standalone.sort(function(a,b){ return SPECS[a].t.localeCompare(SPECS[b].t); });
     standalone.forEach(function(k){
       catHasContent = true;
       catHtml += '<button class="nav-item" data-key="' + k + '" onclick="openSpec(\'' + k + '\')"><span class="ni-dot"></span>' + escH(SPECS[k].t) + '</button>';
