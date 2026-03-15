@@ -1278,7 +1278,8 @@ function renderAdminSpecs() {
 function filterAdminSpecs(filter) {
   var listWrap = document.getElementById('adm-list-wrap');
   if (!listWrap) return;
-  var allKeys = Object.keys(SPECS).sort(function(a,b){ return SPECS[a].t.localeCompare(SPECS[b].t); });
+  var getCatLabel = function(k) { var c = CATS.find(function(x){ return x.id===SPECS[k].cat; }); return c ? c.label : ''; };
+  var allKeys = Object.keys(SPECS).sort(function(a,b){ var cl = getCatLabel(a).localeCompare(getCatLabel(b)); return cl !== 0 ? cl : SPECS[a].t.localeCompare(SPECS[b].t); });
   var keys = filter ? allKeys.filter(function(k){ return SPECS[k].t.toLowerCase().indexOf(filter.toLowerCase())!==-1; }) : allKeys;
   var count = document.getElementById('adm-count');
   if (count) count.textContent = filter ? (keys.length + ' of ' + allKeys.length) : (allKeys.length + ' specs');
