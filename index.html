@@ -922,6 +922,12 @@ function initData() {
     var del = JSON.parse(localStorage.getItem('pi_deleted') || '[]');
     del.forEach(function(k){ delete SPECS[k]; });
   } catch(e){}
+  // Migrate old jsDelivr image URLs to raw.githubusercontent.com
+  Object.keys(SPECS).forEach(function(k){
+    if (SPECS[k].p && SPECS[k].p.indexOf('cdn.jsdelivr.net') !== -1) {
+      SPECS[k].p = SPECS[k].p.replace('https://cdn.jsdelivr.net/gh/Mo-pikcel/PI_Specs@main', 'https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main');
+    }
+  });
 }
 
 function saveCats() { try { localStorage.setItem('pi_cats', JSON.stringify(CATS)); } catch(e){} }
@@ -1424,7 +1430,7 @@ function saveSpecForm() {
   };
   var doSave = function(newPdfs, savedImg) {
     SPECS[key].dl_files = sfExistingPdfs.concat(newPdfs);
-    if (savedImg) SPECS[key].p = 'https://cdn.jsdelivr.net/gh/Mo-pikcel/PI_Specs@main/pi-specs-images/' + savedImg;
+    if (savedImg) SPECS[key].p = 'https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-images/' + savedImg;
     var oldImg = editingKey && SPECS[editingKey] && SPECS[editingKey].p && SPECS[editingKey].p.indexOf('pi-specs-images/') !== -1 ? SPECS[editingKey].p.split('pi-specs-images/')[1] : null;
     if (oldImg && (sfImgRemoved || savedImg)) ghDeleteImage(oldImg);
     saveStoredSpecs();
