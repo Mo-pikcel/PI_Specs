@@ -738,7 +738,27 @@ body{font-family:var(--F);background:var(--bg);color:var(--txt);-webkit-font-smo
       <div class="fg sf-full"><label>Description</label><textarea id="sf-desc" rows="2" placeholder="Brief description of this format..."></textarea></div>
       <div class="fg sf-full"><label>Design Specifications <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--F);font-size:10px">(one per line)</span></label><textarea id="sf-ds" rows="3" placeholder="Overall size: Width 180mm × Height 455mm *[PI130]&#10;Portrait — Printed both sides."></textarea></div>
       <div class="fg sf-full"><label>Artwork Specifications <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--F);font-size:10px">(one per line)</span></label><textarea id="sf-ar" rows="2" placeholder="All images 300 dpi CMYK 100% scale.&#10;Material supplied in Adobe PDF format."></textarea></div>
-      <div class="fg sf-full"><label>Printing Specifications <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--F);font-size:10px">(one per line)</span></label><textarea id="sf-pr" rows="2" placeholder="HI-Q Titan (Gloss) 200g/m² White, 4 Process full colour."></textarea></div>
+      <div class="fg sf-full">
+        <label>Printing Specifications
+          <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--F);font-size:10px">(one per line)</span>
+          <label style="font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--F);font-size:11px;margin-left:12px;cursor:pointer">
+            <input type="checkbox" id="sf-pr-2col" onchange="sfToggle2Col()" style="margin-right:4px"/>Two columns
+          </label>
+        </label>
+        <div id="sf-pr-single"><textarea id="sf-pr" rows="2" placeholder="HI-Q Titan (Gloss) 200g/m² White, 4 Process full colour."></textarea></div>
+        <div id="sf-pr-dual" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <input id="sf-p2-lh" type="text" placeholder="Left column heading e.g. FOREX MATERIAL SPEC" style="margin-bottom:6px"/>
+              <textarea id="sf-p2-li" rows="4" placeholder="One item per line&#10;HI-Q Titan (Gloss) 200g/m²&#10;Gloss Laminated one side only"></textarea>
+            </div>
+            <div>
+              <input id="sf-p2-rh" type="text" placeholder="Right column heading e.g. POP-OUT MATERIAL SPEC" style="margin-bottom:6px"/>
+              <textarea id="sf-p2-ri" rows="4" placeholder="One item per line&#10;300 Gsm Printkote&#10;Gloss laminated — Die cut to shape"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="fg sf-full"><label>Packaging</label><textarea id="sf-pk" rows="2" placeholder="All printed material packed flat in corrugated boxes."></textarea></div>
       <div class="fg sf-full"><label>Media Image</label>
         <input type="file" id="sf-img-inp" accept="image/*" style="display:none" onchange="sfImgPick(this)"/>
@@ -1385,7 +1405,15 @@ function openSpecForm(key) {
   document.getElementById('sf-desc').value = s ? (s.d||'') : '';
   document.getElementById('sf-ds').value = s&&s.ds ? s.ds.join('\n') : '';
   document.getElementById('sf-ar').value = s&&s.ar ? s.ar.join('\n') : '';
+  var has2col = s && s.p2;
+  document.getElementById('sf-pr-2col').checked = !!has2col;
+  document.getElementById('sf-pr-single').style.display = has2col ? 'none' : '';
+  document.getElementById('sf-pr-dual').style.display = has2col ? '' : 'none';
   document.getElementById('sf-pr').value = s&&s.pr ? s.pr.join('\n') : '';
+  document.getElementById('sf-p2-lh').value = has2col ? (s.p2.l.h||'') : '';
+  document.getElementById('sf-p2-li').value = has2col ? (s.p2.l.i||[]).join('\n') : '';
+  document.getElementById('sf-p2-rh').value = has2col ? (s.p2.r.h||'') : '';
+  document.getElementById('sf-p2-ri').value = has2col ? (s.p2.r.i||[]).join('\n') : '';
   document.getElementById('sf-pk').value = s ? (s.pk||'') : '';
   if (s&&s.cat) catSel.value = s.cat;
   sfUpdateGroups(s ? s.group : null);
@@ -1462,6 +1490,11 @@ function renderSfPdfList() {
 }
 function sfRemoveExisting(i) { sfExistingPdfs.splice(i, 1); renderSfPdfList(); }
 function sfRemoveNew(i) { sfPdfFiles.splice(i, 1); renderSfPdfList(); }
+function sfToggle2Col() {
+  var on = document.getElementById('sf-pr-2col').checked;
+  document.getElementById('sf-pr-single').style.display = on ? 'none' : '';
+  document.getElementById('sf-pr-dual').style.display = on ? '' : 'none';
+}
 function closeSpecForm() { document.getElementById('spec-form-curtain').classList.remove('open'); }
 
 function saveSpecForm() {
@@ -1475,7 +1508,11 @@ function saveSpecForm() {
     d: document.getElementById('sf-desc').value.trim(),
     ds: document.getElementById('sf-ds').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
     ar: document.getElementById('sf-ar').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
-    pr: document.getElementById('sf-pr').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
+    pr: document.getElementById('sf-pr-2col').checked ? [] : document.getElementById('sf-pr').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
+    p2: document.getElementById('sf-pr-2col').checked ? {
+      l: { h: document.getElementById('sf-p2-lh').value.trim(), i: document.getElementById('sf-p2-li').value.split('\n').map(function(x){return x.trim();}).filter(Boolean) },
+      r: { h: document.getElementById('sf-p2-rh').value.trim(), i: document.getElementById('sf-p2-ri').value.split('\n').map(function(x){return x.trim();}).filter(Boolean) }
+    } : null,
     pk: document.getElementById('sf-pk').value.trim(),
     p: sfImgRemoved ? '' : (editingKey&&SPECS[editingKey] ? SPECS[editingKey].p : ''),
     dl_files: sfExistingPdfs.slice(),
