@@ -52,7 +52,27 @@
         "All die lines to be in spot colour and set to overprint."
       ],
       "pr": [],
-      "pk": "All printed material packed flat in corrugated boxes.\nBoxes labelled: Client name, brand name, media service descriptor and quantity supplied.",
+      "p2": {
+        "l": {
+          "h": "FOREX MATERIAL SPEC",
+          "i": [
+            "Printed 4 Process (full colour) front only on HI-Q Titan (Gloss), 200g/m², White",
+            "Gloss Laminated One side Only",
+            "Mounted to both sides of 2mm forex",
+            "Custom die made from supplied die trace",
+            "Die Cutting"
+          ]
+        },
+        "r": {
+          "h": "POP-OUT MATERIAL SPEC",
+          "i": [
+            "Printed CMYK one side only on 300 Gsm Printkote",
+            "Gloss laminated, Die cut to shape",
+            "Attached to the Aisle Wing using SVA45 Foam"
+          ]
+        }
+      },
+      "pk": "All printed material must be packed flat in corrugated boxes.\nAll boxes must be clearly labeled with: Client name, brand name, media service descriptor\n(i.e. Aisle Wing Medium Pop out) and quantity supplied.",
       "p": "https://raw.githubusercontent.com/Mo-pikcel/PI_Specs/main/pi-specs-images/maw-pop-out.jpg",
       "dl_files": [],
       "cat": "90-degree",
