@@ -1170,6 +1170,7 @@ function testGhPat() {
 function ghUploadPdf(file, cb) {
   var pat = getGhPat();
   if (!pat) { showToast('No GitHub token — add one in Admin → Settings','err'); cb(null); return; }
+  if (file.size > 900000) { showToast(file.name + ' is too large (' + (file.size/1024/1024).toFixed(1) + 'MB). Max 900KB for PDFs.','err'); cb(null); return; }
   var filename = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
   var path = 'pi-specs-dielines/' + filename;
   var apiBase = 'https://api.github.com/repos/Mo-pikcel/PI_Specs/contents/';
@@ -1215,6 +1216,7 @@ function ghDeletePdf(filename) {
 function ghUploadImage(file, cb) {
   var pat = getGhPat();
   if (!pat) { showToast('No GitHub token — add one in Admin → Settings','err'); cb(null); return; }
+  if (file.size > 900000) { showToast(file.name + ' is too large (' + (file.size/1024/1024).toFixed(1) + 'MB). Resize image to under 900KB.','err'); cb(null); return; }
   var filename = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
   var path = 'pi-specs-images/' + filename;
   var apiBase = 'https://api.github.com/repos/Mo-pikcel/PI_Specs/contents/';
