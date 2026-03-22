@@ -110,6 +110,38 @@
       "cat": "90-degree",
       "group": "aw",
       "_admin": true
+    },
+    "spec-1774215735065": {
+      "t": "Aisle Wing: Box with Window Large",
+      "d": "An aisle wing in a box shape with a transparent window, designed to showcase printed elements or pack shots, enhancing\nthe media presentation",
+      "ds": [
+        "Overall size : Width 200mm x Height 720mm",
+        "Portrait (Printed both sides). Mirror images to be supplied.",
+        "Primedia Instore Logo or “PRIMEDIA INSTORE” copy (Arial 6pt) needs to be included on the artwork.",
+        "Bleed: a minimum of 5 mm bleed to be added to overall size"
+      ],
+      "ar": [
+        "All images used in design to be high resolution 300 dpi CMYK 100% scale.",
+        "(Adobe Photoshop standard profile - US Web Coated (SWOP) V2",
+        "Material to be supplied in Adobe .pdf format with the page setup to include bleed.",
+        "Fonts to be supplied (embedded in the Adobe .pdf file) or converted to paths.",
+        "Please ensure that mirror images are supplied."
+      ],
+      "pr": [
+        "Material to be supplied in Adobe .pdf format with the page setup to include bleed",
+        "Fonts to be supplied (embedded in the Adobe .pdf file) or converted to paths.",
+        "Please include a low resolution .jpeg image file (for reference only).",
+        "Please include a full size signed sherpa proof and artwork die trace with the disk of the material."
+      ],
+      "p2": null,
+      "pk": "All printed material must be packed flat in corrugated boxes.\nAll boxes must be clearly labeled with: Client name, brand name, media service descriptor\n(i.e.Aisle Wing: Box with Window Large) and quantity supplied.",
+      "p": "",
+      "dl_files": [
+        "Box_Aisle_Wing_with_Window_-_Large_-_Die_Line.pdf"
+      ],
+      "cat": "90-degree",
+      "group": "aw",
+      "_admin": true
     }
   },
   "deleted": [],
